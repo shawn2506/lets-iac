@@ -4,7 +4,7 @@ resource "aws_instance" "apex-demo" {
   subnet_id = aws_subnet.apex-public-1.id
   vpc_security_group_ids = [aws_security_group.ssh-access.id]
   key_name          = aws_key_pair.keypair.key_name
-  availability_zone = "us-east-1a"
+  availability_zone = "us-east-1a"   
   user_data = data.template_cloudinit_config.cloudinit-example.rendered
 }
 
@@ -24,5 +24,7 @@ resource "aws_volume_attachment" "apex-volume-1-attachment" {
   volume_id   = aws_ebs_volume.apex-volume-1.id
   instance_id = aws_instance.apex-demo.id
   depends_on = ["aws_internet_gateway.apex-vpc-gw"]
-
 }
+
+# While destroying make sure to stop instances in case of additional mounted drives
+# Also add the parameters depends_on to resources to be deleted before gateways
